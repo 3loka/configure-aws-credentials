@@ -26,7 +26,7 @@ async function assumeRole(params) {
     region,
     roleSkipSessionTagging,
     webIdentityTokenFile,
-    WebIdentityToken
+    webIdentityToken
   } = params;
   assert(
       [sourceAccountId, roleToAssume, roleDurationSeconds, roleSessionName, region].every(isDefined),
@@ -102,10 +102,10 @@ async function assumeRole(params) {
     
   } 
 
-  if(isDefined(WebIdentityToken)) {
+  if(isDefined(webIdentityToken)) {
     core.debug("webIdentityToken provided. Will call sts:AssumeRoleWithWebIdentity and take session tags from token contents.")
     delete assumeRoleRequest.Tags;
-    assumeRoleRequest.WebIdentityToken = WebIdentityToken
+    assumeRoleRequest.WebIdentityToken = webIdentityToken
     assumeFunction = sts.assumeRoleWithWebIdentity.bind(sts);
   }
 
@@ -289,7 +289,7 @@ async function run() {
         roleSessionName,
         roleSkipSessionTagging,
         webIdentityTokenFile,
-        WebIdentityToken
+        webIdentityToken
       });
       exportCredentials(roleCredentials);
       await validateCredentials(roleCredentials.accessKeyId);
