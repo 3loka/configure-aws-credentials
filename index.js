@@ -248,6 +248,7 @@ async function run() {
     const roleSkipSessionTaggingInput = core.getInput('role-skip-session-tagging', { required: false })|| 'false';
     const roleSkipSessionTagging = roleSkipSessionTaggingInput.toLowerCase() === 'true';
     const webIdentityTokenFile = core.getInput('web-identity-token-file', { required: false })
+    const webIdentityTokenFile = core.getInput('web-identity-token', { required: false })
 
     if (!region.match(REGION_REGEX)) {
       throw new Error(`Region is not valid: ${region}`);
