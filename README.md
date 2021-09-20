@@ -199,6 +199,14 @@ with:
   role-to-assume: my-github-actions-role
   web-identity-token-file: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
 ```
+If a trust policy is setup for your role, You can assume a role using a web identity token.
+```yaml
+uses: aws-actions/configure-aws-credentials@v1
+with:
+  aws-region: us-east-2
+  role-to-assume: my-github-actions-role
+  web-identity-token: my-id-token
+```
 
 ### Use with the AWS CLI
 
