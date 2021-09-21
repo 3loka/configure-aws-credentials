@@ -256,6 +256,24 @@ async function run() {
 
     exportRegion(region);
 
+     // Get role credentials if configured to do so
+     if (roleToAssume) {
+      const roleCredentials = await assumeRole({
+        sourceAccountId,
+        region,
+        roleToAssume,
+        roleExternalId,
+        roleDurationSeconds,
+        roleSessionName,
+        roleSkipSessionTagging,
+        webIdentityTokenFile,
+        webIdentityToken
+      });
+      exportCredentials(roleCredentials);
+      await validateCredentials(roleCredentials.accessKeyId);
+      await exportAccountId(maskAccountId, region);
+    }
+
     // Always export the source credentials and account ID.
     // The STS client for calling AssumeRole pulls creds from the environment.
     // Plus, in the assume role case, if the AssumeRole call fails, we want
@@ -278,23 +296,7 @@ async function run() {
 
     const sourceAccountId = await exportAccountId(maskAccountId, region);
 
-    // Get role credentials if configured to do so
-    if (roleToAssume) {
-      const roleCredentials = await assumeRole({
-        sourceAccountId,
-        region,
-        roleToAssume,
-        roleExternalId,
-        roleDurationSeconds,
-        roleSessionName,
-        roleSkipSessionTagging,
-        webIdentityTokenFile,
-        webIdentityToken
-      });
-      exportCredentials(roleCredentials);
-      await validateCredentials(roleCredentials.accessKeyId);
-      await exportAccountId(maskAccountId, region);
-    }
+   
   }
   catch (error) {
     core.setFailed(error.message);
