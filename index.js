@@ -14,6 +14,7 @@ const ROLE_SESSION_NAME = 'GitHubActions';
 const REGION_REGEX = /^[a-z0-9-]+$/g;
 
 async function assumeRole(params) {
+  core.debug("Role to assume found..calling credentials");
   // Assume a role to get short-lived credentials using longer-lived credentials.
   const isDefined = i => !!i;
 
@@ -80,6 +81,8 @@ async function assumeRole(params) {
   }
 
   let assumeFunction = sts.assumeRole.bind(sts);
+
+  core.debug("Role to assume found..before webidentity");
 
   if(isDefined(webIdentityTokenFile)) {
     core.debug("webIdentityTokenFile provided. Will call sts:AssumeRoleWithWebIdentity and take session tags from token contents.")
@@ -234,6 +237,7 @@ function getStsClient(region) {
 }
 
 async function run() {
+  core.debug("Calling Run");
   try {
     // Get inputs
     const accessKeyId = core.getInput('aws-access-key-id', { required: false });
@@ -258,6 +262,7 @@ async function run() {
 
      // Get role credentials if configured to do so
      if (roleToAssume) {
+      core.debug("Role to assume found..Fetching credentials");
       const roleCredentials = await assumeRole({
         sourceAccountId,
         region,
@@ -273,6 +278,8 @@ async function run() {
       await validateCredentials(roleCredentials.accessKeyId);
       await exportAccountId(maskAccountId, region);
     }
+
+    core.debug("after role to assume");
 
     // Always export the source credentials and account ID.
     // The STS client for calling AssumeRole pulls creds from the environment.
